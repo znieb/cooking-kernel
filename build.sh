@@ -153,8 +153,8 @@ DATE2=$(TZ=Asia/Jakarta date +"%Y%m%d")
 		git clone --depth=1 https://github.com/RyuujiX/SDClang -b 14 clang
 
 		msg "|| Cloning GCC ||"
-		git clone --depth=1 https://github.com/Kneba/aarch64-linux-android-4.9 $KERNEL_DIR/gcc64
-		git clone --depth=1 https://github.com/Kneba/arm-linux-androideabi-4.9 $KERNEL_DIR/gcc32
+		git clone --depth=1 https://github.com/KudProject/aarch64-linux-android-4.9.git $KERNEL_DIR/gcc64
+		git clone --depth=1 https://github.com/KudProject/arm-linux-androideabi-4.9.git $KERNEL_DIR/gcc32
 	fi
 
 	# Toolchain Directory defaults to clang-llvm
