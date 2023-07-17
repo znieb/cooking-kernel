@@ -66,7 +66,7 @@ BUILD_TYPE="INCREMENTAL"
 
 # Specify compiler.
 # 'clang' or 'sdclang' or 'gcc'
-COMPILER=gcc
+COMPILER=sdclang
 
 # Kernel is LTO
 LTO=0
@@ -153,8 +153,8 @@ DATE2=$(TZ=Asia/Jakarta date +"%Y%m%d")
 		git clone --depth=1 https://github.com/RyuujiX/SDClang -b 14 clang
 
 		msg "|| Cloning GCC ||"
-		git clone --depth=1 https://github.com/Kneba/aarch64-linux-android-4.9 -b gcc64
-		git clone --depth=1 https://github.com/Kneba/arm-linux-androideabi-4.9 -b gcc32
+		git clone --depth=1 https://github.com/Kneba/aarch64-linux-android-4.9 $KERNEL_DIR/gcc64
+		git clone --depth=1 https://github.com/Kneba/arm-linux-androideabi-4.9 $KERNEL_DIR/gcc32
 	fi
 
 	# Toolchain Directory defaults to clang-llvm
@@ -179,7 +179,7 @@ DATE2=$(TZ=Asia/Jakarta date +"%Y%m%d")
 # Function to replace defconfig versioning
 setversioning() {
     # For staging branch
-    KERNELNAME="$KERNEL_FOR-$NAMA-$JENIS-$VARIAN-$DATE2"
+    KERNELNAME="$NAMA-$JENIS-$VARIAN-$DATE2"
     # Export our new localversion and zipnames
     export KERNELNAME
     export ZIPNAME="$KERNELNAME.zip"
