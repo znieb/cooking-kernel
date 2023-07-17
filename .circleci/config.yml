@@ -6,7 +6,7 @@ jobs:
    steps:
       - run:
           command: |
-            git clone --depth=1 https://github.com/znieb/kernel_asus_sdm660 -b hmp kernel && cd kernel
+            git clone --recursive https://github.com/znieb/kernel_asus_sdm660 -b hmp kernel && cd kernel
             curl https://raw.githubusercontent.com/znieb/cooking-kernel/circle/build.sh > run.sh
             source run.sh
           no_output_timeout : 5h
