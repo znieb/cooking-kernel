@@ -56,9 +56,9 @@ DEFCONFIG=X00TD_defconfig
 MANUFACTURERINFO="ASUSTek Computer Inc."
 
 # Kernel Varian
-NAMA=TheOneMemory
+NAMA=Godzilla
 KERNEL_FOR=9x13
-JENIS=Hayzel
+JENIS=GTR
 VARIAN=HMP
 
 # Build Type
@@ -66,7 +66,7 @@ BUILD_TYPE="INCREMENTAL"
 
 # Specify compiler.
 # 'clang' or 'sdclang' or 'gcc'
-COMPILER=sdclang
+COMPILER=gcc
 
 # Kernel is LTO
 LTO=0
@@ -98,7 +98,7 @@ BUILD_DTBO=0
 
 # Sign the zipfile
 # 1 is YES | 0 is NO
-SIGN=1
+SIGN=0
 	if [ $SIGN = 1 ]
 	then
 		#Check for java
@@ -144,7 +144,7 @@ DATE2=$(TZ=Asia/Jakarta date +"%Y%m%d")
 	elif [ $COMPILER = "gcc" ]
 	then
 		msg "|| Cloning GCC  ||"
-        git clone --depth=1 https://github.com/Kyvangka1610/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu -b master $KERNEL_DIR/gcc64
+                git clone --depth=1 https://github.com/Kyvangka1610/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu -b master $KERNEL_DIR/gcc64
 		git clone --depth=1 https://github.com/Kyvangka1610/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf -b master $KERNEL_DIR/gcc32
 
 	elif [ $COMPILER = "sdclang" ]
@@ -165,7 +165,7 @@ DATE2=$(TZ=Asia/Jakarta date +"%Y%m%d")
 		GCC32_DIR=$KERNEL_DIR/gcc32
 
 	msg "|| Cloning Anykernel ||"
-        git clone https://github.com/Tiktodz/AnyKernel3.git -b main AnyKernel3
+        git clone https://github.com/Tiktodz/AnyKernel3.git -b hmp AnyKernel3
 
 	if [ $BUILD_DTBO = 1 ]
 	then
@@ -196,7 +196,7 @@ exports() {
 	if [ $COMPILER = "clang" ]
 	then
 		CLANG_VER=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
-        LLD_VER="$("$ClangPath"/bin/ld.lld --version | head -n 1)"
+                LLD_VER="$("$ClangPath"/bin/ld.lld --version | head -n 1)"
 		KBUILD_COMPILER_STRING="$CLANG_VER with $LLD_VER"
 		PATH=$TC_DIR/bin/:$PATH
 	elif [ $COMPILER = "gcc" ]
@@ -378,14 +378,33 @@ gen_zip() {
 		mv "$KERNEL_DIR"/out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
 	fi
 	cd AnyKernel3 || exit
-	cp -af anykernel-real.sh anykernel.sh
-	sed -i "s/kernel.string=.*/kernel.string=$NAMA/g" anykernel.sh
-	sed -i "s/kernel.for=.*/kernel.for=$VARIAN/g" anykernel.sh
-	sed -i "s/kernel.compiler=.*/kernel.compiler=$KBUILD_COMPILER_STRING/g" anykernel.sh
-	sed -i "s/kernel.made=.*/kernel.made=dotkit/g" anykernel.sh
-	sed -i "s/kernel.version=.*/kernel.version=$LINUXVER/g" anykernel.sh
-	sed -i "s/message.word=.*/message.word=Rezeki udh ada yg atur om, tetap menyerah, pasti bisa!/g" anykernel.sh
-	sed -i "s/build.date=.*/build.date=$DATE2/g" anykernel.sh
+    cp -af $KERNEL_ROOTDIR/init.HayzelSpectrum.rc spectrum/init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel Godzilla/g" spectrum/init.spectrum.rc
+    cp -af $KERNEL_ROOTDIR/changelog META-INF/com/google/android/aroma/changelog.txt
+    cp -af anykernel-real.sh anykernel.sh
+    sed -i "s/kernel.string=.*/kernel.string=$NAMA/g" anykernel.sh
+    sed -i "s/kernel.type=.*/kernel.type=$VARIAN/g" anykernel.sh
+    sed -i "s/kernel.for=.*/kernel.for=$NAMA-$JENIS/g" anykernel.sh
+    sed -i "s/kernel.compiler=.*/kernel.compiler=$KBUILD_COMPILER_STRING/g" anykernel.sh
+    sed -i "s/kernel.made=.*/kernel.made=godzilla @znieb/g" anykernel.sh
+    sed -i "s/kernel.version=.*/kernel.version=$LINUXVER/g" anykernel.sh
+    sed -i "s/message.word=.*/message.word=Appreciate your efforts for choosing Godzilla kernel./g" anykernel.sh
+    sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
+    sed -i "s/build.type=.*/build.type=$JENIS/g" anykernel.sh
+    sed -i "s/supported.versions=.*/supported.versions=9-13/g" anykernel.sh
+    sed -i "s/device.name1=.*/device.name1=X00TD/g" anykernel.sh
+    sed -i "s/device.name2=.*/device.name2=X00T/g" anykernel.sh
+    sed -i "s/device.name3=.*/device.name3=Zenfone Max Pro M1 (X00TD)/g" anykernel.sh
+    sed -i "s/device.name4=.*/device.name4=ASUS_X00TD/g" anykernel.sh
+    sed -i "s/device.name5=.*/device.name5=ASUS_X00T/g" anykernel.sh
+    sed -i "s/X00TD=.*/X00TD=1/g" anykernel.sh
+    cd META-INF/com/google/android
+    sed -i "s/KNAME/$NAMA/g" aroma-config
+    sed -i "s/KVER/$LINUXVER/g" aroma-config
+    sed -i "s/KAUTHOR/godzilla @znieb/g" aroma-config
+    sed -i "s/KDEVICE/Zenfone Max Pro M1/g" aroma-config
+    sed -i "s/KBDATE/$DATE/g" aroma-config
+    sed -i "s/KVARIANT/$JENIS-$VARIAN/g" aroma-config
+    cd ../../../..
 
 	zip -r9 "$ZIPNAME" * -x .git README.md anykernel-real.sh .gitignore zipsigner* *.zip
 
